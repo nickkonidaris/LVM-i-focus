@@ -1,4 +1,6 @@
 
+# In IR Band if the left frame has spectra to the right of right frame, move positive
+
 
 # must run brew install python-tk
 import tkinter as tk
@@ -49,7 +51,7 @@ def handle(f1, f2):
     d1 = hdu1[0].data.astype(np.float64)
     d2 = hdu2[0].data.astype(np.float64)
 
-    tl, tr, ox, oy = hartman_focus_by_peak_finding(d1,d2)
+    tl, tr, ox, oy = hartman_focus_by_peak_finding(d1,d2, threshold=5000)
     x,y = tl.data.T[0], tl.data.T[1]
     ox *= pix_to_µm_defocus
 
@@ -236,8 +238,26 @@ class App(ctk.CTk):
             self.entries[LS.Image_Number].set(int(cur)+2)
 
 
+        """ 
+        band X [CW] Y [CW] 
+        z    B+ C-   
+
+        
+        """
         if cmd == "Do all":
-            sign = -1
+            band = self.entries["band"].get()
+
+            print(band)
+            if band == "r":
+                sign = -1
+                foc_sign = -1
+            elif band == "z":
+                sign = -1
+                foc_sign = 1
+            elif band == "b":
+                sign = 1
+                foc_sign = 1
+            
             CCD_dimension = 70
             Triangle_height = 235.50
             AB_height = 271.93
@@ -245,11 +265,12 @@ class App(ctk.CTk):
             A,B,C = map(float, self.entries[LS.ABCs].get().split())
             Dx = float(self.entries[LS.DeltaX].get())*micron_to_mm
             Dy = float(self.entries[LS.DeltaY].get())*micron_to_mm
-            offset = -float(self.entries[LS.Defocus].get())*micron_to_mm
+            offset = foc_sign*float(self.entries[LS.Defocus].get())*micron_to_mm
 
 
             Qx = sign*Dy/CCD_dimension
             Qy = Dx/CCD_dimension
+
             print("Tilts: %1.4f %1.4f [rad]" % (Qx, Qy))
 
             dA = np.tan(Qx)*Triangle_height
