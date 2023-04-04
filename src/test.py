@@ -93,6 +93,12 @@ def handle(f1, f2):
     ylabel("Defocus [micron]")
     ylim(*lims)
 
+    subplot(2,2,4)
+    hist(ox, range=[-30,30], bins=50)
+    xlabel("Defocus [µm]")
+    q10,q90 = np.quantile(ox, [0.1, 0.9])
+    title("90percent within %3.1f to %3.1f" % (q10,q90))
+
     if bad:
         text(0,0,"Images not in correct order!!", fontdict={'color':'red', 'size':20})
 
