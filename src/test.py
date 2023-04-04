@@ -32,7 +32,7 @@ def regress(x, y):
 
 
 
-def handle(f1, f2):
+def handle(f1, f2, threshold=5000):
 
     pix_to_µm_defocus = -12/0.2 # The magic number here comes from zemax.
                             # converts pixels of defocus to microns
@@ -51,7 +51,7 @@ def handle(f1, f2):
     d1 = hdu1[0].data.astype(np.float64)
     d2 = hdu2[0].data.astype(np.float64)
 
-    tl, tr, ox, oy = hartman_focus_by_peak_finding(d1,d2, threshold=5000)
+    tl, tr, ox, oy = hartman_focus_by_peak_finding(d1,d2, threshold=threshold)
     x,y = tl.data.T[0], tl.data.T[1]
     ox *= pix_to_µm_defocus
 
@@ -232,7 +232,9 @@ class App(ctk.CTk):
             frame = int(self.entries[LS.Image_Number].get())
             f1 = os.path.join(path, f"sdR-s-{band}{number}-{frame:08}.fits.gz")
             f2 = os.path.join(path, f"sdR-s-{band}{number}-{frame+1:08}.fits.gz")
-            xslope, yslope, defocus = handle(f1,f2)
+            if band == "b": threshold = 100
+            else: threshold = 7000
+            xslope, yslope, defocus = handle(f1,f2, threshold=threshold)
             
             print("slopes: %4.1f %4.1f" % (xslope, yslope))
             self.entries[LS.DeltaX].set("%4.1f" % xslope)
@@ -262,7 +264,7 @@ class App(ctk.CTk):
                 foc_sign = 1
             elif band == "b":
                 sign = 1
-                foc_sign = 1
+                foc_sign = -1
             
             CCD_dimension = 70
             Triangle_height = 235.50
@@ -274,14 +276,19 @@ class App(ctk.CTk):
             offset = foc_sign*float(self.entries[LS.Defocus].get())*micron_to_mm
 
 
+            # Remember Qs are angles _around_ a dimension
             Qx = sign*Dy/CCD_dimension
             Qy = Dx/CCD_dimension
+            if band == "b":
+                Qy *= -1
 
             print("Tilts: %1.4f %1.4f [rad]" % (Qx, Qy))
+
 
             dA = np.tan(Qx)*Triangle_height
             dB = np.tan(Qy)*AB_height/2
             dC = -dB
+
 
             print("dA dB dC: %1.3f %1.3f %1.3f" % (dA, dB, dC))
 
