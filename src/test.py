@@ -260,11 +260,11 @@ class App(ctk.CTk):
                 sign = -1
                 foc_sign = -1
             elif band == "z":
-                sign = -1
+                sign = 1
                 foc_sign = 1
             elif band == "b":
                 sign = 1
-                foc_sign = -1
+                foc_sign = 1
             
             CCD_dimension = 70
             Triangle_height = 235.50
@@ -279,7 +279,7 @@ class App(ctk.CTk):
             # Remember Qs are angles _around_ a dimension
             Qx = sign*Dy/CCD_dimension
             Qy = Dx/CCD_dimension
-            if band == "b":
+            if (band == "b") or (band == "z"):
                 Qy *= -1
 
             print("Tilts: %1.4f %1.4f [rad]" % (Qx, Qy))
