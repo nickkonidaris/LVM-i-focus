@@ -51,7 +51,7 @@ def handle(f1, f2, threshold=5000):
     d1 = hdu1[0].data.astype(np.float64)
     d2 = hdu2[0].data.astype(np.float64)
 
-    tl, tr, ox, oy = hartman_focus_by_peak_finding(d1,d2, threshold=threshold)
+    tl, tr, ox, oy = hartman_focus_by_peak_finding(d1,d2, threshold=threshold, fwhm_pix=3.7)
     x,y = tl.data.T[0], tl.data.T[1]
     ox *= pix_to_µm_defocus
 
@@ -233,6 +233,7 @@ class App(ctk.CTk):
             f1 = os.path.join(path, f"sdR-s-{band}{number}-{frame:08}.fits.gz")
             f2 = os.path.join(path, f"sdR-s-{band}{number}-{frame+1:08}.fits.gz")
             if band == "b": threshold = 100
+            if band == "z": threshold = 3000
             else: threshold = 7000
             xslope, yslope, defocus = handle(f1,f2, threshold=threshold)
             
