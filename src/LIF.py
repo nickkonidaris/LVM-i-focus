@@ -1,8 +1,23 @@
+"""
 
-# In IR Band if the left frame has spectra to the right of right frame, move positive
+LVM-i-focus (LIF) GUI code
+
+Author: Nick Konidaris (npk@carnegiescience.edu)
+
+Purpose: This GUI simplifes the process of focusing.
+
+Todo:
+    - Expose button doesn't work
+    - Rsync button doesn't work
+
+Notes: This code has certain package requirements. The only complicated one
+is Tk, which is unique per each operating system
 
 
-# must run brew install python-tk
+"""
+
+
+# 
 import tkinter as tk
 import customtkinter as ctk
 import json
@@ -116,7 +131,7 @@ class BS:
     Expose = "Expose"
     Rsync = "Rsync"
     Measure_Focus = "Measure Focus"
-    Do_all = "Do all"
+    Compute = "Compute"
 
 class LS:
     """ GUI Labels """
@@ -134,7 +149,8 @@ class LS:
     Path = "Path [opt]" # don't remove [opt] from the name
 
 class App(ctk.CTk):
-    button_names: list[str] = [BS.Expose, BS.Rsync, BS.Measure_Focus, BS.Do_all]
+    #button_names: list[str] = [BS.Expose, BS.Rsync, BS.Measure_Focus, BS.Compute]
+    button_names: list[str] = [BS.Measure_Focus, BS.Compute]
     autoincrement: bool = False
 
     
@@ -150,7 +166,7 @@ class App(ctk.CTk):
         (LS.ABCs_out, 10, 1),
         (LS.Options, 12, 0),
         (LS.Image_Number, 13, 1),
-        (LS.Rsync_cmd, 14, 1),
+        #(LS.Rsync_cmd, 14, 1),
         (LS.Path, 15, 1),
     ]
 
@@ -253,7 +269,7 @@ class App(ctk.CTk):
 
         
         """
-        if cmd == "Do all":
+        if cmd == BS.Compute:
             band = self.entries["band"].get()
 
             print(band)
