@@ -47,7 +47,7 @@ def regress(x, y):
 
 
 
-def handle(f1, f2, threshold=5000):
+def handle(f1, f2, threshold=800):
 
     pix_to_µm_defocus = -12/0.2 # The magic number here comes from zemax.
                             # converts pixels of defocus to microns
@@ -248,9 +248,10 @@ class App(ctk.CTk):
             frame = int(self.entries[LS.Image_Number].get())
             f1 = os.path.join(path, f"sdR-s-{band}{number}-{frame:08}.fits.gz")
             f2 = os.path.join(path, f"sdR-s-{band}{number}-{frame+1:08}.fits.gz")
-            if band == "b": threshold = 100
-            if band == "z": threshold = 3000
-            else: threshold = 7000
+            if band == "b": threshold = 500
+            elif band == "z": threshold = 2000
+            else: threshold = 2000
+            print("Band: %s | Thresh: %i" % (band, threshold))
             xslope, yslope, defocus = handle(f1,f2, threshold=threshold)
             
             print("slopes: %4.1f %4.1f" % (xslope, yslope))
@@ -280,7 +281,7 @@ class App(ctk.CTk):
                 sign = 1
                 foc_sign = 1
             elif band == "b":
-                sign = 1
+                sign = -1
                 foc_sign = 1
             
             CCD_dimension = 70
@@ -296,7 +297,7 @@ class App(ctk.CTk):
             # Remember Qs are angles _around_ a dimension
             Qx = sign*Dy/CCD_dimension
             Qy = Dx/CCD_dimension
-            if (band == "b") or (band == "z"):
+            if (band == "z"):
                 Qy *= -1
 
             print("Tilts: %1.4f %1.4f [rad]" % (Qx, Qy))
