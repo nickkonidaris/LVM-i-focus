@@ -1,22 +1,21 @@
 [tool.poetry]
-name = "LVM-i-focus"
+name = "lvm-i-focus"
 version = "0.1.0"
-description = "Hartman focus gui / command line"
-authors = ["Nick Konidaris <npk@carnegiescience.edu>"]
-
+description = ""
+authors = ["Nick Konidaris <nick.konidaris@gmail.com>"]
+readme = "README.md"
+packages = [{include = "lvm_i_focus"}]
 
 [tool.poetry.dependencies]
-python = "^3.11.3"
-numpy = "^1.20.1"
-astropy = "^5.0"
-scipy = "^1.6.1"
+python = "^3.10"
+lvmi_lab = "0.1.0"
+astropy = "^5.3.0"
+matplotlib = "^3.7.0"
+scikit-learn= "^1.3.0"
 
 
-[tool.poetry.dev-dependencies]
-pytest = "^5.2"
+
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-
