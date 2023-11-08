@@ -25,7 +25,7 @@ from pylab import *
 import os 
 import subprocess as SP
 
-from compute import handle, regress
+from compute import handle
 
 import numpy as np
 
@@ -158,7 +158,7 @@ class App(ctk.CTk):
             f1 = os.path.join(path, f"sdR-s-{band}{number}-{frame:08}.fits.gz")
             f2 = os.path.join(path, f"sdR-s-{band}{number}-{frame+1:08}.fits.gz")
             if band == "b": threshold = 500
-            elif band == "z": threshold = 2000
+            elif band == "z": threshold = 1000
             else: threshold = 2000
             print("Band: %s | Thresh: %i" % (band, threshold))
             xslope, yslope, defocus = handle(f1,f2, threshold=threshold)

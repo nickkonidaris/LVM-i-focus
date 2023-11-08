@@ -2,14 +2,17 @@
 from lvmi_lab import xcor_frames, get_positions_on_ccd, hartman_focus_by_peak_finding
 from astropy.io import fits
 
+import numpy as np
+from pylab import *
+
 from sklearn.linear_model import HuberRegressor
 
 
-def regress(x, y):
+def regress(x, y, epsilon=1):
     """ Returns a linear fitting function """
     X = np.zeros((x.shape[0],1))
     X[:,0] = x
-    huber = HuberRegressor(epsilon=1)
+    huber = HuberRegressor(epsilon=epsilon)
     huber.fit(X,y)
 
     return np.poly1d([huber.coef_[0], huber.intercept_])
@@ -57,7 +60,7 @@ def handle(f1, f2, threshold=800):
     subplot(2,2,2)
     XR = np.arange(0,4096,300)
     plot(y, ox, '.') ; grid(True)
-    reg = regress(y, ox)
+    reg = regress(y, ox, epsilon=2.0)
     plot(XR, reg(XR), lw=3)
     axhline(np.median(ox))
     xlabel("Defocus [micron]")
